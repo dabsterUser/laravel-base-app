@@ -13,7 +13,9 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        Gate::authorize('view permissions');
+        if (!Gate::allows('view permissions') && !Gate::allows('manage permissions')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $permissions = Permission::all();
 
@@ -25,7 +27,9 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        Gate::authorize('create permissions');
+        if (!Gate::allows('create permissions') && !Gate::allows('manage permissions')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         return view('admin.permissions.create');
     }
@@ -35,7 +39,9 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        Gate::authorize('create permissions');
+        if (!Gate::allows('create permissions') && !Gate::allows('manage permissions')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:permissions,name'],
@@ -61,7 +67,9 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission)
     {
-        Gate::authorize('edit permissions');
+        if (!Gate::allows('edit permissions') && !Gate::allows('manage permissions')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         return view('admin.permissions.edit', compact('permission'));
     }
@@ -71,7 +79,9 @@ class PermissionController extends Controller
      */
     public function update(Request $request, Permission $permission)
     {
-        Gate::authorize('edit permissions');
+        if (!Gate::allows('edit permissions') && !Gate::allows('manage permissions')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:permissions,name,'.$permission->id],
@@ -95,7 +105,9 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission)
     {
-        Gate::authorize('delete permissions');
+        if (!Gate::allows('delete permissions') && !Gate::allows('manage permissions')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $name = $permission->name;
         $permission->delete();

@@ -16,7 +16,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        Gate::authorize('view users');
+        if (!Gate::allows('view users') && !Gate::allows('manage users')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $users = User::with('roles')->latest()->paginate(10);
 
@@ -28,7 +30,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        Gate::authorize('create users');
+        if (!Gate::allows('create users') && !Gate::allows('manage users')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $roles = Role::all();
 
@@ -40,7 +44,9 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        Gate::authorize('create users');
+        if (!Gate::allows('create users') && !Gate::allows('manage users')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -74,7 +80,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        Gate::authorize('edit users');
+        if (!Gate::allows('edit users') && !Gate::allows('manage users')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $roles = Role::all();
         $userRoles = $user->roles->pluck('name')->toArray();
@@ -87,7 +95,9 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        Gate::authorize('edit users');
+        if (!Gate::allows('edit users') && !Gate::allows('manage users')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -126,7 +136,9 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        Gate::authorize('delete users');
+        if (!Gate::allows('delete users') && !Gate::allows('manage users')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         if ($user->id === auth()->id()) {
             return redirect()->route('users.index')

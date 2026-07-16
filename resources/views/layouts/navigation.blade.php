@@ -15,21 +15,21 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    @can('view users')
+                    @if(auth()->user()->can('view users') || auth()->user()->can('manage users'))
                         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                             {{ __('Users') }}
                         </x-nav-link>
-                    @endcan
-                    @can('view roles')
+                    @endif
+                    @if(auth()->user()->can('view roles') || auth()->user()->can('manage roles'))
                         <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')">
                             {{ __('Roles') }}
                         </x-nav-link>
-                    @endcan
-                    @can('view permissions')
+                    @endif
+                    @if(auth()->user()->can('view permissions') || auth()->user()->can('manage permissions'))
                         <x-nav-link :href="route('permissions.index')" :active="request()->routeIs('permissions.*')">
                             {{ __('Permissions') }}
                         </x-nav-link>
-                    @endcan
+                    @endif
                     @can('view logs')
                         <x-nav-link :href="route('activity-logs.index')" :active="request()->routeIs('activity-logs.*')">
                             {{ __('Activity Logs') }}
@@ -90,21 +90,21 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            @can('view users')
+            @if(auth()->user()->can('view users') || auth()->user()->can('manage users'))
                 <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                     {{ __('Users') }}
                 </x-responsive-nav-link>
-            @endcan
-            @can('view roles')
+            @endif
+            @if(auth()->user()->can('view roles') || auth()->user()->can('manage roles'))
                 <x-responsive-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')">
                     {{ __('Roles') }}
                 </x-responsive-nav-link>
-            @endcan
-            @can('view permissions')
+            @endif
+            @if(auth()->user()->can('view permissions') || auth()->user()->can('manage permissions'))
                 <x-responsive-nav-link :href="route('permissions.index')" :active="request()->routeIs('permissions.*')">
                     {{ __('Permissions') }}
                 </x-responsive-nav-link>
-            @endcan
+            @endif
             @can('view logs')
                 <x-responsive-nav-link :href="route('activity-logs.index')" :active="request()->routeIs('activity-logs.*')">
                     {{ __('Activity Logs') }}

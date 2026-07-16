@@ -14,7 +14,9 @@ class RoleController extends Controller
      */
     public function index()
     {
-        Gate::authorize('view roles');
+        if (!Gate::allows('view roles') && !Gate::allows('manage roles')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $roles = Role::with('permissions')->get();
 
@@ -26,7 +28,9 @@ class RoleController extends Controller
      */
     public function create()
     {
-        Gate::authorize('create roles');
+        if (!Gate::allows('create roles') && !Gate::allows('manage roles')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $permissions = Permission::all();
 
@@ -38,7 +42,9 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        Gate::authorize('create roles');
+        if (!Gate::allows('create roles') && !Gate::allows('manage roles')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:roles,name'],
@@ -69,7 +75,9 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        Gate::authorize('edit roles');
+        if (!Gate::allows('edit roles') && !Gate::allows('manage roles')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $permissions = Permission::all();
         $rolePermissions = $role->permissions->pluck('name')->toArray();
@@ -82,7 +90,9 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        Gate::authorize('edit roles');
+        if (!Gate::allows('edit roles') && !Gate::allows('manage roles')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:roles,name,'.$role->id],
@@ -113,7 +123,9 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        Gate::authorize('delete roles');
+        if (!Gate::allows('delete roles') && !Gate::allows('manage roles')) {
+            abort(403, 'This action is unauthorized.');
+        }
 
         if ($role->name === 'Super Admin') {
             return redirect()->route('roles.index')

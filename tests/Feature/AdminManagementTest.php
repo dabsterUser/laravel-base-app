@@ -13,7 +13,8 @@ class AdminManagementTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $adminUser;
+    protected $superAdmin;
+    protected $standardAdmin;
     protected $normalUser;
 
     protected function setUp(): void
@@ -23,26 +24,50 @@ class AdminManagementTest extends TestCase
         // Seed roles and permissions
         $this->artisan('db:seed', ['--class' => 'RolesAndPermissionsSeeder']);
 
-        $this->adminUser = User::where('email', 'admin@example.com')->first();
+        $this->superAdmin = User::where('email', 'admin@example.com')->first();
+        $this->standardAdmin = User::where('email', 'staff@example.com')->first();
         $this->normalUser = User::where('email', 'user@example.com')->first();
     }
 
     /**
-     * Test that Super Admin can access the users, roles, permissions, and activity logs.
+     * Test that Super Admin can access all panels (users, roles, permissions, activity logs).
      */
-    public function test_super_admin_can_access_admin_panels(): void
+    public function test_super_admin_can_access_all_panels(): void
     {
-        $response = $this->actingAs($this->adminUser)->get(route('users.index'));
+        $response = $this->actingAs($this->superAdmin)->get(route('users.index'));
         $response->assertStatus(200);
 
-        $response = $this->actingAs($this->adminUser)->get(route('roles.index'));
+        $response = $this->actingAs($this->superAdmin)->get(route('roles.index'));
         $response->assertStatus(200);
 
-        $response = $this->actingAs($this->adminUser)->get(route('permissions.index'));
+        $response = $this->actingAs($this->superAdmin)->get(route('permissions.index'));
         $response->assertStatus(200);
 
-        $response = $this->actingAs($this->adminUser)->get(route('activity-logs.index'));
+        $response = $this->actingAs($this->superAdmin)->get(route('activity-logs.index'));
         $response->assertStatus(200);
+    }
+
+    /**
+     * Test that Standard Admin (with manage users and view logs) can only access those,
+     * and is forbidden from roles and permissions management.
+     */
+    public function test_standard_admin_can_only_access_users_and_logs(): void
+    {
+        // Can access Users
+        $response = $this->actingAs($this->standardAdmin)->get(route('users.index'));
+        $response->assertStatus(200);
+
+        // Can access Activity Logs
+        $response = $this->actingAs($this->standardAdmin)->get(route('activity-logs.index'));
+        $response->assertStatus(200);
+
+        // Forbidden from Roles
+        $response = $this->actingAs($this->standardAdmin)->get(route('roles.index'));
+        $response->assertStatus(403);
+
+        // Forbidden from Permissions
+        $response = $this->actingAs($this->standardAdmin)->get(route('permissions.index'));
+        $response->assertStatus(403);
     }
 
     /**
@@ -100,7 +125,7 @@ class AdminManagementTest extends TestCase
     {
         $roleName = 'Admin';
 
-        $response = $this->actingAs($this->adminUser)->post(route('users.store'), [
+        $response = $this->actingAs($this->superAdmin)->post(route('users.store'), [
             'name' => 'New Test Admin',
             'email' => 'newadmin@example.com',
             'password' => 'password123',
@@ -116,7 +141,7 @@ class AdminManagementTest extends TestCase
 
         // Assert that activity log is registered
         $this->assertDatabaseHas('activity_log', [
-            'causer_id' => $this->adminUser->id,
+            'causer_id' => $this->superAdmin->id,
             'subject_id' => $newUser->id,
             'subject_type' => User::class,
             'description' => "Created user account for {$newUser->email}",
@@ -128,7 +153,7 @@ class AdminManagementTest extends TestCase
      */
     public function test_super_admin_can_create_role_and_logs_activity(): void
     {
-        $response = $this->actingAs($this->adminUser)->post(route('roles.store'), [
+        $response = $this->actingAs($this->superAdmin)->post(route('roles.store'), [
             'name' => 'Editor',
             'permissions' => ['view users', 'view logs'],
         ]);
@@ -142,7 +167,7 @@ class AdminManagementTest extends TestCase
 
         // Assert that activity log is registered
         $this->assertDatabaseHas('activity_log', [
-            'causer_id' => $this->adminUser->id,
+            'causer_id' => $this->superAdmin->id,
             'subject_id' => $role->id,
             'subject_type' => Role::class,
             'description' => "Created role 'Editor'",
@@ -154,7 +179,7 @@ class AdminManagementTest extends TestCase
      */
     public function test_super_admin_can_create_permission_and_logs_activity(): void
     {
-        $response = $this->actingAs($this->adminUser)->post(route('permissions.store'), [
+        $response = $this->actingAs($this->superAdmin)->post(route('permissions.store'), [
             'name' => 'publish posts',
         ]);
 
@@ -165,7 +190,7 @@ class AdminManagementTest extends TestCase
 
         // Assert that activity log is registered
         $this->assertDatabaseHas('activity_log', [
-            'causer_id' => $this->adminUser->id,
+            'causer_id' => $this->superAdmin->id,
             'subject_id' => $permission->id,
             'subject_type' => Permission::class,
             'description' => "Created permission 'publish posts'",
