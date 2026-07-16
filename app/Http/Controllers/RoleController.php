@@ -14,7 +14,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        Gate::authorize('manage roles');
+        Gate::authorize('view roles');
 
         $roles = Role::with('permissions')->get();
 
@@ -26,7 +26,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        Gate::authorize('manage roles');
+        Gate::authorize('create roles');
 
         $permissions = Permission::all();
 
@@ -38,7 +38,7 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        Gate::authorize('manage roles');
+        Gate::authorize('create roles');
 
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:roles,name'],
@@ -69,7 +69,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        Gate::authorize('manage roles');
+        Gate::authorize('edit roles');
 
         $permissions = Permission::all();
         $rolePermissions = $role->permissions->pluck('name')->toArray();
@@ -82,7 +82,7 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-        Gate::authorize('manage roles');
+        Gate::authorize('edit roles');
 
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:roles,name,'.$role->id],
@@ -113,7 +113,7 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        Gate::authorize('manage roles');
+        Gate::authorize('delete roles');
 
         if ($role->name === 'Super Admin') {
             return redirect()->route('roles.index')

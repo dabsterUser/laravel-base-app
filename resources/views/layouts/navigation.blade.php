@@ -15,17 +15,17 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    @can('manage users')
+                    @can('view users')
                         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                             {{ __('Users') }}
                         </x-nav-link>
                     @endcan
-                    @can('manage roles')
+                    @can('view roles')
                         <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')">
                             {{ __('Roles') }}
                         </x-nav-link>
                     @endcan
-                    @can('manage permissions')
+                    @can('view permissions')
                         <x-nav-link :href="route('permissions.index')" :active="request()->routeIs('permissions.*')">
                             {{ __('Permissions') }}
                         </x-nav-link>
@@ -90,17 +90,17 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            @can('manage users')
+            @can('view users')
                 <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
                     {{ __('Users') }}
                 </x-responsive-nav-link>
             @endcan
-            @can('manage roles')
+            @can('view roles')
                 <x-responsive-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')">
                     {{ __('Roles') }}
                 </x-responsive-nav-link>
             @endcan
-            @can('manage permissions')
+            @can('view permissions')
                 <x-responsive-nav-link :href="route('permissions.index')" :active="request()->routeIs('permissions.*')">
                     {{ __('Permissions') }}
                 </x-responsive-nav-link>

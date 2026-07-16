@@ -64,6 +64,36 @@ class AdminManagementTest extends TestCase
     }
 
     /**
+     * Test granular permission checks (e.g., standard Admin can view but cannot delete).
+     */
+    public function test_granular_permissions_restrict_unauthorized_actions(): void
+    {
+        // 1. Create a user with only "view users" permission
+        $restrictedUser = User::factory()->create();
+        $restrictedUser->givePermissionTo('view users');
+
+        // Can view the list
+        $response = $this->actingAs($restrictedUser)->get(route('users.index'));
+        $response->assertStatus(200);
+
+        // Cannot create users (forbidden)
+        $response = $this->actingAs($restrictedUser)->get(route('users.create'));
+        $response->assertStatus(403);
+
+        $response = $this->actingAs($restrictedUser)->post(route('users.store'), [
+            'name' => 'Should fail',
+            'email' => 'fail@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ]);
+        $response->assertStatus(403);
+
+        // Cannot delete users (forbidden)
+        $response = $this->actingAs($restrictedUser)->delete(route('users.destroy', $this->normalUser));
+        $response->assertStatus(403);
+    }
+
+    /**
      * Test user creation and automatic activity logging.
      */
     public function test_super_admin_can_create_user_and_logs_activity(): void
@@ -100,14 +130,14 @@ class AdminManagementTest extends TestCase
     {
         $response = $this->actingAs($this->adminUser)->post(route('roles.store'), [
             'name' => 'Editor',
-            'permissions' => ['manage users', 'view logs'],
+            'permissions' => ['view users', 'view logs'],
         ]);
 
         $response->assertRedirect(route('roles.index'));
         $this->assertDatabaseHas('roles', ['name' => 'Editor']);
 
         $role = Role::where('name', 'Editor')->first();
-        $this->assertTrue($role->hasPermissionTo('manage users'));
+        $this->assertTrue($role->hasPermissionTo('view users'));
         $this->assertTrue($role->hasPermissionTo('view logs'));
 
         // Assert that activity log is registered

@@ -19,11 +19,27 @@ class RolesAndPermissionsSeeder extends Seeder
         // Reset cached roles and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Create permissions
+        // Create granular permissions
         $permissions = [
-            'manage users',
-            'manage roles',
-            'manage permissions',
+            // Users
+            'view users',
+            'create users',
+            'edit users',
+            'delete users',
+
+            // Roles
+            'view roles',
+            'create roles',
+            'edit roles',
+            'delete roles',
+
+            // Permissions
+            'view permissions',
+            'create permissions',
+            'edit permissions',
+            'delete permissions',
+
+            // Activity Logs
             'view logs',
         ];
 
@@ -33,14 +49,22 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Create roles and assign created permissions
         $superAdminRole = Role::findOrCreate('Super Admin', 'web');
-        // Super Admin gets all permissions via Gate::before in AuthServiceProvider or AppServiceProvider, but let's sync them anyway
         $superAdminRole->syncPermissions(Permission::all());
 
+        // Default Admin role gets view/edit/create but not delete by default (or customizable)
         $adminRole = Role::findOrCreate('Admin', 'web');
-        $adminRole->syncPermissions(['manage users', 'view logs']);
+        $adminRole->syncPermissions([
+            'view users',
+            'create users',
+            'edit users',
+            'view roles',
+            'create roles',
+            'edit roles',
+            'view permissions',
+            'view logs',
+        ]);
 
         $userRole = Role::findOrCreate('User', 'web');
-        // Regular User doesn't have administrative permissions by default
 
         // Create Default Super Admin user
         $adminUser = User::updateOrCreate(

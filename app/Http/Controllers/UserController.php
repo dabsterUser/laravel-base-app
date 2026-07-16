@@ -16,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        Gate::authorize('manage users');
+        Gate::authorize('view users');
 
         $users = User::with('roles')->latest()->paginate(10);
 
@@ -28,7 +28,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        Gate::authorize('manage users');
+        Gate::authorize('create users');
 
         $roles = Role::all();
 
@@ -40,7 +40,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        Gate::authorize('manage users');
+        Gate::authorize('create users');
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -74,7 +74,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        Gate::authorize('manage users');
+        Gate::authorize('edit users');
 
         $roles = Role::all();
         $userRoles = $user->roles->pluck('name')->toArray();
@@ -87,7 +87,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        Gate::authorize('manage users');
+        Gate::authorize('edit users');
 
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -126,7 +126,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        Gate::authorize('manage users');
+        Gate::authorize('delete users');
 
         if ($user->id === auth()->id()) {
             return redirect()->route('users.index')
