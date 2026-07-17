@@ -9,20 +9,23 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+    <body class="font-sans text-gray-900 antialiased bg-gray-50">
+        <div class="min-h-screen flex flex-col justify-center items-center p-6 bg-slate-50">
+            <div class="w-full sm:max-w-lg relative bg-white px-8 sm:px-12 py-10 sm:py-12 shadow-md border border-gray-100 rounded-3xl mt-12 mb-6">
+                <!-- Floating Emblem/Logo D -->
+                <div class="absolute -top-10 left-1/2 transform -translate-x-1/2">
+                    <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg border border-gray-100/50">
+                        <div class="w-14 h-14 bg-[#3b59dd] rounded-xl flex items-center justify-center text-white font-bold font-serif text-3xl shadow-inner">
+                            D
+                        </div>
+                    </div>
+                </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
                 {{ $slot }}
             </div>
         </div>
