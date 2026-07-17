@@ -30,9 +30,9 @@ class AdminManagementTest extends TestCase
     }
 
     /**
-     * Test that Super Admin can access all panels (users, roles, permissions, activity logs).
+     * Test that Super Admin (possessing all permissions) can access all panels.
      */
-    public function test_super_admin_can_access_all_panels(): void
+    public function test_super_admin_can_access_all_panels_when_possessing_permissions(): void
     {
         $response = $this->actingAs($this->superAdmin)->get(route('users.index'));
         $response->assertStatus(200);
@@ -45,6 +45,24 @@ class AdminManagementTest extends TestCase
 
         $response = $this->actingAs($this->superAdmin)->get(route('activity-logs.index'));
         $response->assertStatus(200);
+    }
+
+    /**
+     * Test that removing a permission from Super Admin successfully restricts their access immediately.
+     */
+    public function test_removing_permission_from_super_admin_restricts_access(): void
+    {
+        // Assert they can access it initially
+        $response = $this->actingAs($this->superAdmin)->get(route('activity-logs.index'));
+        $response->assertStatus(200);
+
+        // Revoke the 'view logs' permission from the Super Admin role
+        $superAdminRole = Role::findByName('Super Admin', 'web');
+        $superAdminRole->revokePermissionTo('view logs');
+
+        // Access should now be restricted (403 Forbidden)
+        $response = $this->actingAs($this->superAdmin)->get(route('activity-logs.index'));
+        $response->assertStatus(403);
     }
 
     /**

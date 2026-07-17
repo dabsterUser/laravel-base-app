@@ -127,11 +127,6 @@ class RoleController extends Controller
             abort(403, 'This action is unauthorized.');
         }
 
-        if ($role->name === 'Super Admin') {
-            return redirect()->route('roles.index')
-                ->with('error', 'The Super Admin role cannot be deleted.');
-        }
-
         $name = $role->name;
         $role->delete();
 
