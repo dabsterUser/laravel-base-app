@@ -21,6 +21,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('roles', \App\Http\Controllers\RoleController::class);
     Route::resource('permissions', \App\Http\Controllers\PermissionController::class);
     Route::resource('activity-logs', \App\Http\Controllers\ActivityLogController::class)->only(['index', 'show']);
+
+    // Settings Routes
+    Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [\App\Http\Controllers\SettingsController::class, 'update'])->name('settings.update');
+    Route::post('/settings/test-smtp', [\App\Http\Controllers\SettingsController::class, 'testSmtp'])->name('settings.test-smtp');
 });
 
 require __DIR__.'/auth.php';
