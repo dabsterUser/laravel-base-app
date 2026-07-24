@@ -47,6 +47,9 @@ class RolesAndPermissionsSeeder extends Seeder
 
             // Activity Logs
             'view logs',
+
+            // Notifications
+            'manage notifications',
         ];
 
         foreach ($permissions as $permission) {
@@ -57,12 +60,13 @@ class RolesAndPermissionsSeeder extends Seeder
         $superAdminRole = Role::findOrCreate('Super Admin', 'web');
         $superAdminRole->syncPermissions(Permission::all());
 
-        // Standard Admin gets ONLY "manage users" and "view logs"
-        // This means they will see only "Users" and "Activity Logs" in the navigation, and have no access to Roles or Permissions.
+        // Standard Admin gets "manage users", "view logs", and "manage notifications"
+        // This means they will see Users, Activity Logs, and can dispatch Notifications.
         $adminRole = Role::findOrCreate('Admin', 'web');
         $adminRole->syncPermissions([
             'manage users',
             'view logs',
+            'manage notifications',
         ]);
 
         $userRole = Role::findOrCreate('User', 'web');

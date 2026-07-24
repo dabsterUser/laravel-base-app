@@ -178,7 +178,101 @@
                     </div>
 
                     <!-- Right Controls / User Menu dropdown -->
-                    <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-3">
+                        <!-- Premium Notification Dropdown Component -->
+                        <div x-data="{ open: false }" class="relative">
+                            <!-- Bell Button -->
+                            <button @click="open = !open" class="relative p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none transition-colors">
+                                <span class="sr-only">View notifications</span>
+                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                @if(Auth::user()->unreadNotifications->count() > 0)
+                                    <span class="absolute top-1.5 right-1.5 block h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900 animate-pulse"></span>
+                                @endif
+                            </button>
+
+                            <!-- Dropdown Box -->
+                            <div
+                                x-show="open"
+                                @click.away="open = false"
+                                x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 scale-95"
+                                x-transition:enter-end="opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="opacity-100 scale-100"
+                                x-transition:leave-end="opacity-0 scale-95"
+                                class="absolute right-0 mt-2.5 w-80 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden z-50"
+                                style="display: none;"
+                            >
+                                <div class="px-4 py-3.5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+                                    <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 tracking-wide">Notifications</span>
+                                    @if(Auth::user()->unreadNotifications->count() > 0)
+                                        <form action="{{ route('notifications.mark-all-read') }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="text-[11px] font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                                Mark all read
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+
+                                <div class="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
+                                    @forelse(Auth::user()->unreadNotifications->take(5) as $notification)
+                                        <div class="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex items-start justify-between space-x-2">
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center space-x-1.5 mb-1">
+                                                    @if(($notification->data['type'] ?? 'info') === 'success')
+                                                        <span class="h-2 w-2 rounded-full bg-emerald-500 shrink-0"></span>
+                                                    @elseif(($notification->data['type'] ?? 'info') === 'warning')
+                                                        <span class="h-2 w-2 rounded-full bg-amber-500 shrink-0"></span>
+                                                    @elseif(($notification->data['type'] ?? 'info') === 'error')
+                                                        <span class="h-2 w-2 rounded-full bg-rose-500 shrink-0"></span>
+                                                    @else
+                                                        <span class="h-2 w-2 rounded-full bg-indigo-500 shrink-0"></span>
+                                                    @endif
+                                                    <p class="text-xs font-semibold text-slate-900 dark:text-white truncate">
+                                                        {{ $notification->data['title'] ?? 'System Update' }}
+                                                    </p>
+                                                </div>
+                                                <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
+                                                    {{ $notification->data['message'] ?? '' }}
+                                                </p>
+                                                <span class="text-[10px] text-slate-400 dark:text-slate-500 mt-1 block">
+                                                    {{ $notification->created_at->diffForHumans() }}
+                                                </span>
+                                            </div>
+
+                                            <form action="{{ route('notifications.read', $notification->id) }}" method="POST" class="shrink-0">
+                                                @csrf
+                                                <button type="submit" class="p-1 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800" title="Mark as Read">
+                                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @empty
+                                        <div class="py-12 px-4 text-center">
+                                            <div class="h-10 w-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-3 text-slate-400 dark:text-slate-500">
+                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0V9a2 2 0 00-2-2H6a2 2 0 00-2 2v2" />
+                                                </svg>
+                                            </div>
+                                            <p class="text-xs font-medium text-slate-500 dark:text-slate-400">All caught up!</p>
+                                            <p class="text-[11px] text-slate-400 mt-0.5">No unread notifications.</p>
+                                        </div>
+                                    @endforelse
+                                </div>
+
+                                <div class="p-2 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+                                    <a href="{{ route('notifications.index') }}" class="block text-center text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                                        View Notification Center
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
                         <x-dropdown align="right" width="48">
                             <x-slot name="trigger">
                                 <button class="flex items-center space-x-2 p-1 px-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 transition duration-150 ease-in-out focus:outline-none">
