@@ -103,4 +103,53 @@ class SettingsTest extends TestCase
 
         $response->assertStatus(403);
     }
+
+    /**
+     * Test that authorized users can successfully generate email templates via AI/fallback generator.
+     */
+    public function test_super_admin_can_generate_ai_email_template(): void
+    {
+        $response = $this->actingAs($this->superAdmin)->post(route('settings.generate-email'), [
+            'module' => 'users',
+            'tone' => 'friendly',
+            'prompt' => 'Draft a welcome greeting for newly assigned staff.',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'success' => true,
+        ]);
+
+        $this->assertNotNull($response->json('email'));
+        $this->assertTrue(str_contains($response->json('email'), 'welcome greeting'));
+    }
+
+    /**
+     * Test that parameters validation prevents bad template writing inputs.
+     */
+    public function test_generate_ai_email_template_validates_required_parameters(): void
+    {
+        $response = $this->actingAs($this->superAdmin)
+            ->post(route('settings.generate-email'), [
+                'module' => 'users',
+                'tone' => 'friendly',
+                // prompt is missing
+            ]);
+
+        $response->assertSessionHasErrors('prompt');
+    }
+
+    /**
+     * Test that standard users cannot access the email generator endpoint.
+     */
+    public function test_generate_ai_email_template_unauthorized_for_standard_user(): void
+    {
+        $response = $this->actingAs($this->normalUser)->post(route('settings.generate-email'), [
+            'module' => 'roles',
+            'tone' => 'urgent',
+            'prompt' => 'Alert the team about a password leak.',
+        ]);
+
+        $response->assertStatus(403);
+    }
 }

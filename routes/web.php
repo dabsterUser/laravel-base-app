@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
     Route::post('/settings', [\App\Http\Controllers\SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/test-smtp', [\App\Http\Controllers\SettingsController::class, 'testSmtp'])->name('settings.test-smtp');
+    Route::post('/settings/generate-email', [\App\Http\Controllers\SettingsController::class, 'generateEmail'])->name('settings.generate-email');
 });
 
 require __DIR__.'/auth.php';
