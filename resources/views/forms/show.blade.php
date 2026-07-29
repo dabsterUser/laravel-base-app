@@ -96,9 +96,17 @@
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
                         @forelse($form->submissions as $sub)
-                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+                            @php
+                                $isUnread = isset($unreadIds) && in_array($sub->id, $unreadIds);
+                            @endphp
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors {{ $isUnread ? 'bg-rose-50/30 dark:bg-rose-950/10' : '' }}">
                                 <td class="px-6 py-4 font-semibold text-slate-900 dark:text-white whitespace-nowrap">
-                                    {{ $sub->created_at->format('M d, Y H:i:s') }}
+                                    <div class="flex items-center space-x-2">
+                                        @if($isUnread)
+                                            <span class="h-2.5 w-2.5 rounded-full bg-rose-500 animate-pulse inline-block" title="New Unread Submission"></span>
+                                        @endif
+                                        <span>{{ $sub->created_at->format('M d, Y H:i:s') }}</span>
+                                    </div>
                                     <div class="text-[10px] text-slate-400 font-normal mt-0.5">{{ $sub->created_at->diffForHumans() }}</div>
                                 </td>
                                 @foreach($headers as $key => $label)

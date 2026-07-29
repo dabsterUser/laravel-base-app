@@ -76,6 +76,42 @@ class NotificationController extends Controller
     }
 
     /**
+     * Poll endpoint to fetch any unread notifications created in the last 60 seconds (or since a provided timestamp)
+     * so that the browser can display real-time push and bell notifications.
+     */
+    public function poll(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
+        $since = $request->query('since') ? \Carbon\Carbon::parse($request->query('since')) : now()->subSeconds(15);
+
+        $unread = $user->unreadNotifications()
+            ->where('created_at', '>=', $since)
+            ->latest()
+            ->get()
+            ->map(function ($notif) {
+                return [
+                    'id' => $notif->id,
+                    'title' => $notif->data['title'] ?? 'System Update',
+                    'message' => $notif->data['message'] ?? '',
+                    'type' => $notif->data['type'] ?? 'info',
+                    'link' => $notif->data['link'] ?? null,
+                    'created_at' => $notif->created_at->toIso8601String(),
+                    'time_diff' => $notif->created_at->diffForHumans(),
+                ];
+            });
+
+        return response()->json([
+            'unread' => $unread,
+            'total_unread_count' => $user->unreadNotifications()->count(),
+            'server_time' => now()->toIso8601String()
+        ]);
+    }
+
+    /**
      * Mark a specific notification as read.
      */
     public function markAsRead($id)

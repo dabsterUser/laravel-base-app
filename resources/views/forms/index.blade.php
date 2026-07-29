@@ -103,7 +103,14 @@
                         @forelse($forms as $form)
                             <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
                                 <td class="px-6 py-4">
-                                    <div class="font-bold text-slate-950 dark:text-white">{{ $form->title }}</div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-bold text-slate-950 dark:text-white">{{ $form->title }}</span>
+                                        @if(($form->unread_submissions_count ?? 0) > 0)
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-500 text-white animate-pulse">
+                                                {{ $form->unread_submissions_count }} NEW
+                                            </span>
+                                        @endif
+                                    </div>
                                     <div class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs truncate">{{ $form->description ?? 'No description provided' }}</div>
                                     <div class="text-[10px] text-slate-400 mt-1">Created {{ $form->created_at->diffForHumans() }}</div>
                                 </td>
@@ -119,7 +126,13 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 font-bold text-slate-800 dark:text-slate-300">
-                                    {{ $form->submissions_count }} entries
+                                    <span>{{ $form->submissions_count }} entries</span>
+                                    @if(($form->unread_submissions_count ?? 0) > 0)
+                                        <div class="text-[10px] text-rose-500 font-bold mt-0.5 flex items-center">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-rose-500 inline-block mr-1"></span>
+                                            {{ $form->unread_submissions_count }} unread
+                                        </div>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4">
                                     <div x-data="{ copied: false }" class="flex items-center space-x-1.5">

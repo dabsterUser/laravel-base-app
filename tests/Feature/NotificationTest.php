@@ -120,4 +120,30 @@ class NotificationTest extends TestCase
         $user->refresh();
         $this->assertCount(0, $user->unreadNotifications);
     }
+
+    /** @test */
+    public function user_can_poll_new_unread_notifications()
+    {
+        $user = User::factory()->create();
+        $user->assignRole('User');
+
+        // Initially no polled unread notifications if 'since' is now
+        $response = $this->actingAs($user)->getJson(route('notifications.poll', ['since' => now()->toIso8601String()]));
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['unread', 'total_unread_count', 'server_time']);
+        $this->assertCount(0, $response->json('unread'));
+
+        // Send a notification
+        $user->notify(new SystemNotification('Breaking News', 'Form submitted successfully!', 'success', 'https://example.com/forms/1'));
+
+        // Poll with a threshold of 10 seconds ago
+        $response = $this->actingAs($user)->getJson(route('notifications.poll', ['since' => now()->subSeconds(10)->toIso8601String()]));
+        $response->assertStatus(200);
+        $this->assertCount(1, $response->json('unread'));
+        $this->assertEquals('Breaking News', $response->json('unread.0.title'));
+        $this->assertEquals('Form submitted successfully!', $response->json('unread.0.message'));
+        $this->assertEquals('success', $response->json('unread.0.type'));
+        $this->assertEquals('https://example.com/forms/1', $response->json('unread.0.link'));
+        $this->assertEquals(1, $response->json('total_unread_count'));
+    }
 }

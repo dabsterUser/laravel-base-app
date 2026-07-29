@@ -93,7 +93,46 @@ class PublicFormController extends Controller
             'data' => $submissionData,
             'ip_address' => $request->ip(),
             'user_agent' => $request->header('User-Agent'),
+            'is_read' => false,
         ]);
+
+        // Dispatch system notifications to appropriate users
+        try {
+            $recipients = collect();
+
+            // 1. Add form creator if they exist
+            if ($form->user_id) {
+                $creator = \App\Models\User::find($form->user_id);
+                if ($creator) {
+                    $recipients->push($creator);
+                }
+            }
+
+            // 2. Add any user who has 'manage forms' permission
+            $admins = \App\Models\User::permission('manage forms')->get();
+            foreach ($admins as $admin) {
+                $recipients->push($admin);
+            }
+
+            // De-duplicate recipients by ID
+            $recipients = $recipients->unique('id');
+
+            $notificationTitle = "New Submission: " . $form->title;
+            $notificationMsg = "A new submission was received on " . $form->title . " from IP " . $request->ip() . ".";
+            $notificationLink = route('forms.show', $form->id);
+
+            foreach ($recipients as $recipient) {
+                $recipient->notify(new \App\Notifications\SystemNotification(
+                    $notificationTitle,
+                    $notificationMsg,
+                    'info',
+                    $notificationLink
+                ));
+            }
+        } catch (\Exception $e) {
+            // Silently fallback if anything fails during notification dispatching
+            logger()->error('Form submission notification error: ' . $e->getMessage());
+        }
 
         // Trigger log activity
         activity()

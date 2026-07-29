@@ -125,14 +125,24 @@
 
                         <!-- Form Builder Navigation Link -->
                         @can('manage forms')
+                            @php
+                                $unreadSubmissionsCount = \App\Models\FormSubmission::where('is_read', false)->count();
+                            @endphp
                             <a
                                 href="{{ route('forms.index') }}"
-                                class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group {{ request()->routeIs('forms.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'hover:bg-slate-800/60 hover:text-white' }}"
+                                class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group {{ request()->routeIs('forms.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'hover:bg-slate-800/60 hover:text-white' }}"
                             >
-                                <svg class="mr-3 h-5 w-5 flex-shrink-0 {{ request()->routeIs('forms.*') ? 'text-white' : 'text-slate-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                                <span>Form Builder</span>
+                                <div class="flex items-center">
+                                    <svg class="mr-3 h-5 w-5 flex-shrink-0 {{ request()->routeIs('forms.*') ? 'text-white' : 'text-slate-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <span>Form Builder</span>
+                                </div>
+                                @if($unreadSubmissionsCount > 0)
+                                    <span class="inline-flex items-center justify-center px-2 py-0.5 ml-2 text-[10px] font-bold leading-none text-rose-100 bg-rose-600 rounded-full animate-pulse">
+                                        {{ $unreadSubmissionsCount }}
+                                    </span>
+                                @endif
                             </a>
                         @endcan
 
@@ -324,5 +334,149 @@
                 </main>
             </div>
         </div>
+
+        <!-- Global Real-Time Poller & HTML5 Desktop Web Notifications System -->
+        @auth
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                let lastPollTime = new Date().toISOString();
+                let notificationPermissionGranted = false;
+
+                // Request desktop notification permission from user
+                window.requestBrowserNotificationPermission = function() {
+                    if (!("Notification" in window)) {
+                        console.log("This browser does not support desktop notifications.");
+                        return;
+                    }
+                    Notification.requestPermission().then(permission => {
+                        if (permission === "granted") {
+                            notificationPermissionGranted = true;
+                            showLocalToast("Desktop notifications enabled successfully!", "success");
+                        }
+                    });
+                };
+
+                // Check initial permission
+                if ("Notification" in window) {
+                    if (Notification.permission === "granted") {
+                        notificationPermissionGranted = true;
+                    }
+                }
+
+                // Show toast alert on the screen dynamically
+                function showLocalToast(message, type = 'info', link = null) {
+                    const toastId = 'toast_' + Date.now();
+                    const toastHtml = `
+                        <div id="${toastId}" class="fixed bottom-5 right-5 z-50 max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-2xl flex items-start space-x-3 transition-all duration-300 transform translate-y-10 opacity-0 cursor-pointer">
+                            <div class="h-8 w-8 rounded-full flex items-center justify-center shrink-0 ${
+                                type === 'success' ? 'bg-emerald-50 text-emerald-500 dark:bg-emerald-950/40' :
+                                type === 'warning' ? 'bg-amber-50 text-amber-500 dark:bg-amber-950/40' :
+                                type === 'error' ? 'bg-rose-50 text-rose-500 dark:bg-rose-950/40' :
+                                'bg-indigo-50 text-indigo-500 dark:bg-indigo-950/40'
+                            }">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-slate-900 dark:text-white">New Update</p>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">${message}</p>
+                            </div>
+                        </div>
+                    `;
+                    document.body.insertAdjacentHTML('beforeend', toastHtml);
+                    const el = document.getElementById(toastId);
+
+                    // Animate In
+                    setTimeout(() => {
+                        el.classList.remove('translate-y-10', 'opacity-0');
+                    }, 50);
+
+                    // Click handler to redirect
+                    el.addEventListener('click', () => {
+                        if (link) {
+                            window.location.href = link;
+                        } else {
+                            el.classList.add('translate-y-10', 'opacity-0');
+                            setTimeout(() => el.remove(), 300);
+                        }
+                    });
+
+                    // Auto dismiss
+                    setTimeout(() => {
+                        if (document.getElementById(toastId)) {
+                            el.classList.add('translate-y-10', 'opacity-0');
+                            setTimeout(() => el.remove(), 300);
+                        }
+                    }, 6000);
+                }
+
+                // Triggers HTML5 native push notifications
+                function triggerDesktopPush(title, message, link = null) {
+                    if (notificationPermissionGranted) {
+                        try {
+                            const notification = new Notification(title, {
+                                body: message,
+                                icon: '/favicon.ico'
+                            });
+                            if (link) {
+                                notification.onclick = () => {
+                                    window.focus();
+                                    window.location.href = link;
+                                };
+                            }
+                        } catch (err) {
+                            console.error("Desktop notification failed to trigger: ", err);
+                        }
+                    }
+                }
+
+                // Perform AJAX polling
+                function pollNotifications() {
+                    const url = `{{ route('notifications.poll') }}?since=${encodeURIComponent(lastPollTime)}`;
+                    fetch(url)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.server_time) {
+                                lastPollTime = data.server_time;
+                            }
+
+                            const unreadList = data.unread || [];
+                            unreadList.forEach(notif => {
+                                // Trigger both on-screen Toast and native HTML5 desktop push notifications!
+                                showLocalToast(notif.title + ": " + notif.message, notif.type, notif.link);
+                                triggerDesktopPush(notif.title, notif.message, notif.link);
+                            });
+
+                            // If there are new notifications, we reload the dropdown or unread badge dynamically!
+                            if (unreadList.length > 0) {
+                                // Check if there is a bell badge count to update
+                                const badge = document.querySelector('.relative .absolute.bg-rose-500');
+                                if (badge) {
+                                    badge.classList.remove('hidden');
+                                } else {
+                                    // Dynamically append red dot badge to bell icon if it wasn't there
+                                    const bellBtn = document.querySelector('.relative button[class*="text-slate-500"]');
+                                    if (bellBtn && !bellBtn.querySelector('.bg-rose-500')) {
+                                        bellBtn.insertAdjacentHTML('beforeend', '<span class="absolute top-1.5 right-1.5 block h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900 animate-pulse"></span>');
+                                    }
+                                }
+                            }
+                        })
+                        .catch(err => console.log("Notification poll error: ", err));
+                }
+
+                // Initial request for permission if unasked
+                if ("Notification" in window && Notification.permission === "default") {
+                    setTimeout(() => {
+                        window.requestBrowserNotificationPermission();
+                    }, 5000);
+                }
+
+                // Start polling interval (every 12 seconds)
+                setInterval(pollNotifications, 12000);
+            });
+        </script>
+        @endauth
     </body>
 </html>

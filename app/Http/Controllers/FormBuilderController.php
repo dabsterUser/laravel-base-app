@@ -18,7 +18,12 @@ class FormBuilderController extends Controller
             abort(403, 'This action is unauthorized.');
         }
 
-        $forms = Form::withCount('submissions')->latest()->paginate(10);
+        $forms = Form::withCount([
+            'submissions',
+            'submissions as unread_submissions_count' => function ($query) {
+                $query->where('is_read', false);
+            }
+        ])->latest()->paginate(10);
 
         return view('forms.index', compact('forms'));
     }
@@ -88,7 +93,15 @@ class FormBuilderController extends Controller
             $query->latest();
         }])->findOrFail($id);
 
-        return view('forms.show', compact('form'));
+        // Capture unread IDs
+        $unreadIds = $form->submissions->where('is_read', false)->pluck('id')->toArray();
+
+        // Mark them as read in the database so they won't show as unread next time
+        if (!empty($unreadIds)) {
+            \App\Models\FormSubmission::whereIn('id', $unreadIds)->update(['is_read' => true]);
+        }
+
+        return view('forms.show', compact('form', 'unreadIds'));
     }
 
     /**

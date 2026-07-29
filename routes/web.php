@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
 
     // Notifications Routes
     Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/poll', [\App\Http\Controllers\NotificationController::class, 'poll'])->name('notifications.poll');
     Route::post('/notifications/broadcast', [\App\Http\Controllers\NotificationController::class, 'sendRoleNotification'])->name('notifications.broadcast');
     Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
