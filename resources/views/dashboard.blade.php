@@ -285,85 +285,38 @@
         @endif
     </div>
 
-    <!-- 5. Interactive Dynamic Chart & Graph Generator -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-6 shadow-sm mb-8"
-         x-data="dynamicChartBuilder()">
-        <!-- Card Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-slate-100 dark:border-slate-800/80 gap-4 mb-6">
-            <div>
-                <h3 class="text-base font-bold text-slate-800 dark:text-white">Dynamic Graph & Chart Generator</h3>
-                <p class="text-xs text-slate-400 dark:text-slate-500">Simply add or edit attributes (Label & Value) and select visual style to generate graphs instantly.</p>
+    <!-- 5. Real-time Application Metrics & Analytics Graphs -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        <!-- Card 1: Form Submissions Performance -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-6 shadow-sm">
+            <div class="pb-4 border-b border-slate-100 dark:border-slate-800/80 mb-4">
+                <h3 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Form Submissions Traffic</h3>
+                <p class="text-xs text-slate-400">Total entries received across created forms</p>
             </div>
-
-            <div>
-                <!-- Reset Button -->
-                <button @click="resetToDefaults()" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400 transition-colors">
-                    Reset Defaults
-                </button>
+            <div class="h-64 relative flex items-center justify-center">
+                <canvas id="formSubmissionsPerformanceCanvas"></canvas>
             </div>
         </div>
 
-        <!-- Main Builder Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Inputs Column (1/3 width) -->
-            <div class="space-y-5">
-                <!-- Title -->
-                <div class="space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Chart Display Title</label>
-                    <input type="text" x-model="chartTitle" @input="updateChart()" class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 py-2 px-3 text-xs focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
-                </div>
-
-                <!-- Chart Type -->
-                <div class="space-y-1.5">
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Visualization Style</label>
-                    <select x-model="chartType" @change="rebuildChart()" class="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 py-2 px-3 text-xs focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
-                        <option value="bar">Bar Graph</option>
-                        <option value="pie">Pie Chart</option>
-                        <option value="doughnut">Doughnut Chart</option>
-                        <option value="line">Line Graph</option>
-                        <option value="polarArea">Polar Area</option>
-                        <option value="radar">Radar Chart</option>
-                    </select>
-                </div>
-
-                <!-- Attributes Editor -->
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Custom Attributes</label>
-                        <button @click="addAttribute()" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center space-x-1">
-                            <span>+ Add Attribute</span>
-                        </button>
-                    </div>
-
-                    <div class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
-                        <template x-for="(attr, index) in attributes" :key="index">
-                            <div class="flex items-center space-x-2 bg-slate-50 dark:bg-slate-950 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800/80">
-                                <!-- Label Input -->
-                                <input type="text" x-model="attr.label" @input="updateChart()" placeholder="Label" class="w-2/3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-1 px-2 text-xs focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
-
-                                <!-- Value Input -->
-                                <input type="number" x-model.number="attr.value" @input="updateChart()" placeholder="Value" class="w-1/3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-1 px-2 text-xs focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors">
-
-                                <!-- Delete Button -->
-                                <button @click="removeAttribute(index)" class="text-rose-500 hover:text-rose-700 p-1 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-colors" :disabled="attributes.length <= 1">
-                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </template>
-                    </div>
-                </div>
+        <!-- Card 2: User Roles Distribution -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-6 shadow-sm">
+            <div class="pb-4 border-b border-slate-100 dark:border-slate-800/80 mb-4">
+                <h3 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">User Roles Distribution</h3>
+                <p class="text-xs text-slate-400">Proportion of user profiles assigned per role</p>
             </div>
+            <div class="h-64 relative flex items-center justify-center">
+                <canvas id="userRolesDistributionCanvas"></canvas>
+            </div>
+        </div>
 
-            <!-- Visual Chart Canvas Column (2/3 width) -->
-            <div class="lg:col-span-2 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-6 min-h-[320px] relative">
-                <div class="w-full h-72 z-10">
-                    <canvas id="dynamicDashboardCanvas" class="w-full h-full"></canvas>
-                </div>
-
-                <!-- Absolute background glow effect -->
-                <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 via-transparent to-purple-500/5 rounded-2xl pointer-events-none"></div>
+        <!-- Card 3: Form Submissions Volume Trend -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-6 shadow-sm">
+            <div class="pb-4 border-b border-slate-100 dark:border-slate-800/80 mb-4">
+                <h3 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Submissions Volume Trend</h3>
+                <p class="text-xs text-slate-400">Form entries timeline frequency (Last 7 Days)</p>
+            </div>
+            <div class="h-64 relative flex items-center justify-center">
+                <canvas id="submissionsVolumeTrendCanvas"></canvas>
             </div>
         </div>
     </div>
@@ -371,173 +324,148 @@
     <!-- Chart JS and interactive initializer -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        function dynamicChartBuilder() {
-            return {
-                chartTitle: 'Our Custom Visual Metrics',
-                chartType: 'bar',
-                attributes: [],
-                chartInstance: null,
+        document.addEventListener('DOMContentLoaded', () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            const fontColor = isDark ? '#94a3b8' : '#475569';
+            const gridColor = 'rgba(148, 163, 184, 0.1)';
 
-                init() {
-                    const savedTitle = localStorage.getItem('duralux_chart_title');
-                    const savedType = localStorage.getItem('duralux_chart_type');
-                    const savedAttributes = localStorage.getItem('duralux_chart_attributes');
+            // Data passed from DashboardController
+            const formStats = @json($formStats);
+            const roleStats = @json($roleStats);
+            const submissionChartData = @json($submissionChartData);
 
-                    if (savedTitle) this.chartTitle = savedTitle;
-                    if (savedType) this.chartType = savedType;
+            // 1. Form Submissions Performance (Bar Chart)
+            const formLabels = formStats.map(f => f.title);
+            const formCounts = formStats.map(f => f.submissions_count);
 
-                    if (savedAttributes) {
-                        try {
-                            this.attributes = JSON.parse(savedAttributes);
-                        } catch (e) {
-                            this.loadDefaults();
-                        }
-                    } else {
-                        this.loadDefaults();
-                    }
+            const finalFormLabels = formLabels.length ? formLabels : ['Customer Feedback', 'Job Application', 'Lead Form'];
+            const finalFormCounts = formLabels.length ? formCounts : [14, 25, 8];
 
-                    this.$nextTick(() => {
-                        this.rebuildChart();
-                    });
-                },
-
-                loadDefaults() {
-                    this.attributes = [
-                        { label: 'Form Registrations', value: 45 },
-                        { label: 'Newsletter Signups', value: 82 },
-                        { label: 'SMTP Email Sent', value: 64 },
-                        { label: 'Support Tickets', value: 28 },
-                        { label: 'New Dynamic Roles', value: 12 }
-                    ];
-                },
-
-                resetToDefaults() {
-                    this.chartTitle = 'Our Custom Visual Metrics';
-                    this.chartType = 'bar';
-                    this.loadDefaults();
-                    this.saveToStorage();
-                    this.rebuildChart();
-                },
-
-                addAttribute() {
-                    this.attributes.push({ label: 'New Attribute', value: 10 });
-                    this.saveToStorage();
-                    this.updateChart();
-                },
-
-                removeAttribute(index) {
-                    if (this.attributes.length > 1) {
-                        this.attributes.splice(index, 1);
-                        this.saveToStorage();
-                        this.updateChart();
-                    }
-                },
-
-                saveToStorage() {
-                    localStorage.setItem('duralux_chart_title', this.chartTitle);
-                    localStorage.setItem('duralux_chart_type', this.chartType);
-                    localStorage.setItem('duralux_chart_attributes', JSON.stringify(this.attributes));
-                },
-
-                getChartColors() {
-                    return {
-                        bg: [
-                            'rgba(79, 70, 229, 0.75)',  // indigo-600
-                            'rgba(147, 51, 234, 0.75)', // purple-600
-                            'rgba(236, 72, 153, 0.75)', // pink-500
-                            'rgba(245, 158, 11, 0.75)', // amber-500
-                            'rgba(16, 185, 129, 0.75)', // emerald-500
-                            'rgba(59, 130, 246, 0.75)', // blue-500
-                            'rgba(239, 68, 68, 0.75)'   // rose-500
-                        ],
-                        border: [
-                            'rgba(79, 70, 229, 1)',
-                            'rgba(147, 51, 234, 1)',
-                            'rgba(236, 72, 153, 1)',
-                            'rgba(245, 158, 11, 1)',
-                            'rgba(16, 185, 129, 1)',
-                            'rgba(59, 130, 246, 1)',
-                            'rgba(239, 68, 68, 1)'
-                        ]
-                    };
-                },
-
-                rebuildChart() {
-                    this.saveToStorage();
-                    const ctx = document.getElementById('dynamicDashboardCanvas');
-                    if (!ctx) return;
-
-                    if (this.chartInstance) {
-                        this.chartInstance.destroy();
-                    }
-
-                    const colors = this.getChartColors();
-                    const labels = this.attributes.map(a => a.label || '');
-                    const dataValues = this.attributes.map(a => Number(a.value) || 0);
-
-                    this.chartInstance = new Chart(ctx, {
-                        type: this.chartType,
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Attributes Count',
-                                data: dataValues,
-                                backgroundColor: colors.bg,
-                                borderColor: colors.border,
-                                borderWidth: 2,
-                                borderRadius: this.chartType === 'bar' ? 6 : 0,
-                                hoverOffset: 12
-                            }]
+            const ctx1 = document.getElementById('formSubmissionsPerformanceCanvas');
+            if (ctx1) {
+                new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: finalFormLabels,
+                        datasets: [{
+                            label: 'Submissions',
+                            data: finalFormCounts,
+                            backgroundColor: 'rgba(79, 70, 229, 0.75)',  // indigo-600
+                            borderColor: 'rgba(79, 70, 229, 1)',
+                            borderWidth: 2,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
                         },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: ['pie', 'doughnut', 'polarArea', 'radar'].includes(this.chartType),
-                                    position: 'bottom',
-                                    labels: {
-                                        font: { family: 'Figtree', weight: 'bold', size: 10 },
-                                        color: document.documentElement.classList.contains('dark') ? '#94a3b8' : '#475569'
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: this.chartTitle,
-                                    font: { family: 'Figtree', weight: 'bold', size: 14 },
-                                    color: document.documentElement.classList.contains('dark') ? '#f8fafc' : '#0f172a',
-                                    padding: { bottom: 15 }
-                                }
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: gridColor },
+                                ticks: { font: { family: 'Figtree', size: 10 }, color: fontColor }
                             },
-                            scales: ['bar', 'line', 'radar'].includes(this.chartType) ? {
-                                y: {
-                                    beginAtZero: true,
-                                    grid: { color: 'rgba(148, 163, 184, 0.1)' },
-                                    ticks: { font: { family: 'Figtree', size: 10 }, color: '#94a3b8' }
-                                },
-                                x: {
-                                    grid: { display: false },
-                                    ticks: { font: { family: 'Figtree', size: 10 }, color: '#94a3b8' }
-                                }
-                            } : undefined
+                            x: {
+                                grid: { display: false },
+                                ticks: { font: { family: 'Figtree', size: 10 }, color: fontColor }
+                            }
                         }
-                    });
-                },
+                    }
+                });
+            }
 
-                updateChart() {
-                    this.saveToStorage();
-                    if (!this.chartInstance) return;
+            // 2. User Roles Distribution (Doughnut/Pie Chart)
+            const roleLabels = roleStats.map(r => r.name);
+            const roleCounts = roleStats.map(r => r.users_count);
 
-                    const labels = this.attributes.map(a => a.label || '');
-                    const dataValues = this.attributes.map(a => Number(a.value) || 0);
+            const finalRoleLabels = roleLabels.length ? roleLabels : ['Super Admin', 'Admin', 'User'];
+            const finalRoleCounts = roleLabels.length ? roleCounts : [1, 1, 1];
 
-                    this.chartInstance.data.labels = labels;
-                    this.chartInstance.data.datasets[0].data = dataValues;
-                    this.chartInstance.options.plugins.title.text = this.chartTitle;
+            const ctx2 = document.getElementById('userRolesDistributionCanvas');
+            if (ctx2) {
+                new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: finalRoleLabels,
+                        datasets: [{
+                            data: finalRoleCounts,
+                            backgroundColor: [
+                                'rgba(147, 51, 234, 0.75)', // purple-600
+                                'rgba(236, 72, 153, 0.75)', // pink-500
+                                'rgba(16, 185, 129, 0.75)'  // emerald-500
+                            ],
+                            borderColor: [
+                                'rgba(147, 51, 234, 1)',
+                                'rgba(236, 72, 153, 1)',
+                                'rgba(16, 185, 129, 1)'
+                            ],
+                            borderWidth: 2,
+                            hoverOffset: 12
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    font: { family: 'Figtree', weight: 'bold', size: 10 },
+                                    color: fontColor
+                                }
+                            }
+                        }
+                    }
+                });
+            }
 
-                    this.chartInstance.update();
-                }
-            };
-        }
+            // 3. Form Submissions Volume Trend (Line Chart)
+            const trendLabels = submissionChartData.map(s => s.day);
+            const trendCounts = submissionChartData.map(s => s.count);
+
+            const finalTrendLabels = trendLabels.length ? trendLabels : ['Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed'];
+            const finalTrendCounts = trendLabels.length ? trendCounts : [3, 8, 4, 9, 12, 15, 11];
+
+            const ctx3 = document.getElementById('submissionsVolumeTrendCanvas');
+            if (ctx3) {
+                new Chart(ctx3, {
+                    type: 'line',
+                    data: {
+                        labels: finalTrendLabels,
+                        datasets: [{
+                            label: 'Entries Created',
+                            data: finalTrendCounts,
+                            backgroundColor: 'rgba(236, 72, 153, 0.1)', // pink-500 light fill
+                            borderColor: 'rgba(236, 72, 153, 1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.35,
+                            pointBackgroundColor: 'rgba(236, 72, 153, 1)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: gridColor },
+                                ticks: { font: { family: 'Figtree', size: 10 }, color: fontColor }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { font: { family: 'Figtree', size: 10 }, color: fontColor }
+                            }
+                        }
+                    }
+                });
+            }
+        });
     </script>
 </x-app-layout>
