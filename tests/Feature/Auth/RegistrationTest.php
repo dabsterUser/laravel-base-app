@@ -23,9 +23,19 @@ class RegistrationTest extends TestCase
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
+            'company_name' => 'Stark Enterprises',
         ]);
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+
+        // Assert Tenant and link was created
+        $this->assertDatabaseHas('tenants', [
+            'name' => 'Stark Enterprises',
+        ]);
+
+        $user = \App\Models\User::where('email', 'test@example.com')->first();
+        $this->assertNotNull($user->tenant_id);
+        $this->assertEquals('Stark Enterprises', $user->tenant->name);
     }
 }

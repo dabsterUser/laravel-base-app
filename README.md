@@ -1,59 +1,158 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Duralux - Ultimate Laravel 12 Enterprise Base Application
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Duralux is a state-of-the-art, premium enterprise base application built on **Laravel 12**, **SQLite**, and **Tailwind CSS**. It combines advanced multi-tenancy, dynamic role-based access control, real-time user-targeted notifications, comprehensive system audits, custom dynamic drag-and-drop form building, and live interactive dashboards.
 
-## About Laravel
+Designed to mimic a premium enterprise SaaS environment, it features an elegant dark-left-sidebar "Duralux" theme layout with sleek dashboard statistics, modern form designs, high-performance web components, and dynamic real-time integrations.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🌟 Key Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🏢 1. Advanced Multi-Tenancy Architecture
+- **Automatic Query Isolation:** Seamless query filtering across `users`, `forms`, and `settings` tables using a custom `TenantScope` and a reusable `BelongsToTenant` Eloquent trait.
+- **Tenant Onboarding:** Extended Laravel Breeze registration flow requiring an onboarded user's Company / Tenant Name. This dynamically provisions a new tenant and designates the registrant as the tenant's `Super Admin`.
+- **Global Tenancy Control Dashboard:** A specialized central Tenancy Control board designed exclusively for **Global Super Admins** (`tenant_id = null`), allowing them to view metadata, monitor user/form counts, and manage tenants across the entire database ecosystem.
 
-## Learning Laravel
+### 🔐 2. Authentication & Granular RBAC (Spatie)
+- **Breeze Integration:** Full-featured Breeze Authentication system with bespoke Tailwind card designs, floating circular emblems, social login aesthetics, and secure, responsive view layouts.
+- **Dynamic Roles & Permissions (Spatie):** High-fidelity administration panels to manage Users, Roles, and Permissions. Dynamic checkboxes allow immediate role assignments and granular access customization.
+- **Super-Admin Safeguard:** Strict permission-based authorization checks ensuring even high-privileged administrators must possess explicit permissions, preventing implicit bypasses.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 📝 3. Comprehensive Audit Trail & Activity Logs
+- **Dynamic Logging (Spatie):** Automatic recording of critical administrative events (e.g., creating users, role adjustments, permission modifications, system configuration overrides).
+- **Audit Console:** Dedicated index and detail panels with full breadcrumbs, formatted timestamps, formatted JSON metadata diff views, and user attribution for full enterprise compliance.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🎛️ 4. Interactive Drag-&-Drop Form Builder
+- **Alpine.js-powered Workspace:** Interactive drag-and-drop / click-to-add workspace to build bespoke form schemas (text inputs, textareas, dropdown selects, radio options, checkboxes).
+- **Public Form Display & Iframe Embed Widget:** Unique public-facing routes (`/f/{id}`) to load and submit live active forms with dynamically compiled server-side validation. Includes standard HTML iframe codes and an external dynamic widget script (`public/js/form-embed-widget.js`) to embed forms onto external sites seamlessly.
+- **Read / Unread Submission Auditing:** Dynamic unread indicators. Shows pulsing red notification dots and rose-tinted backgrounds for unread form entries on the Forms dashboard, the Left Sidebar, and the Submissions log, automatically marking entries as read upon administrative viewing.
 
-## Laravel Sponsors
+### 🔔 5. Real-Time Web Notifications & Live Poller
+- **Notification Center:** Custom unified inbox to filter database notifications (All, Read, Unread) and instantly broadcast role-targeted alerts across the application.
+- **12-Second AJAX Poller:** A high-frequency poller querying `/notifications/poll` that captures incoming notifications and instantly triggers browser-native HTML5 Desktop Push notifications as well as elegant, clickable sliding screen Toasts.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### ⚙️ 6. System Settings & AI Template Writer
+- **Mail & Dynamic SMTP Testing:** Runtime connection-tested SMTP settings that clear cached mail managers instantly via `forgetMailers()`, dynamically verifying server parameters without system reloads.
+- **AI LLM Integrations:** Dynamic vendor selection (OpenAI, Groq, Anthropic) using dynamic toggle panels to manage API keys, host URL endpoints, and model configurations securely in the database.
+- **AI Email Writer:** Interactive AJAX-driven email body template generator utilizing live AI API endpoints (or robust localized fallback simulation templates).
 
-### Premium Partners
+### 📊 7. Beautiful Live Analytics Panels
+- **Chart.js Visualizations:** Replacing generic placeholders with three real-time, interactive data-viz widgets:
+  - **Form Submissions Traffic (Bar Chart):** Displaying live cumulative submission metrics across active forms.
+  - **User Roles Distribution (Doughnut Chart):** Displaying user counts mapped to respective roles in the system.
+  - **Submissions Volume Trend (Line Chart):** Tracking daily submission traffic volume across the trailing 7 days.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 🛠️ Installation & Setup Guide
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 📋 Prerequisites
+Ensure you have the following installed on your machine:
+- **PHP >= 8.2**
+- **Composer**
+- **Node.js & NPM**
+- **SQLite3**
 
-## Code of Conduct
+### 🚀 Step-by-Step Launch Instructions
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. **Clone the Repository:**
+   ```bash
+   git clone <repository-url>
+   cd laravel-base-app
+   ```
 
-## Security Vulnerabilities
+2. **Install Composer & NPM Dependencies:**
+   ```bash
+   composer install
+   npm install
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3. **Configure Environment Variables:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   *Note: By default, database connection is set to `sqlite` pointing to `database/database.sqlite`.*
 
-## License
+4. **Initialize Database:**
+   Ensure an empty SQLite file exists:
+   ```bash
+   touch database/database.sqlite
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+5. **Run Migrations & Seed Default Roles/Users:**
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+   This will set up all core schemas (users, roles, permissions, activities, forms, notifications, settings, and tenants) and seed initial testing records.
+
+6. **Compile Frontend Assets:**
+   ```bash
+   # Compiles and bundles Tailwind, CSS, and JS files for production
+   npm run build
+   ```
+
+7. **Start the Local Development Server:**
+   ```bash
+   php artisan serve
+   ```
+   The application will be accessible at [http://127.0.0.1:8000](http://127.0.0.1:8000).
+
+---
+
+## 👥 Seeded Test Credentials
+
+The system seeds several testing profiles by default:
+
+| Role | Email | Password | Access Context |
+| :--- | :--- | :--- | :--- |
+| **Global Super Admin** | `admin@example.com` | `password` | Global Access (No Tenancy limit), full Tenancy Control sidebar. |
+| **Standard Tenant Admin** | `staff@example.com` | `password` | Bound to Default Tenant, can manage forms, users, and settings within tenant. |
+| **Regular Tenant User** | `user@example.com` | `password` | Bound to Default Tenant, standard read/write access. |
+
+---
+
+## 🧪 Running Tests
+
+Ensure your code and configurations remain perfect and regression-free by executing the comprehensive test suite:
+
+```bash
+php artisan test
+```
+
+The test suite covers:
+- Complete Authentication, Registration, and Password Reset flows.
+- Granular Spatie role/permission creation and enforcement.
+- Activity log auditing and metadata verification.
+- Dynamic SMTP Dynamic Mailer testing.
+- AI LLM Generation validation.
+- Form Builder schema constraints and public submission logic.
+- Dynamic database notification marking, polling, and unread badges.
+
+---
+
+## 📂 Architecture & Trait Guide
+
+### Multi-Tenant Usage
+To make any model multi-tenant, simply include the `BelongsToTenant` trait:
+```php
+namespace App\Models;
+
+use App\Models\Traits\BelongsToTenant;
+use Illuminate\Database\Eloquent\Model;
+
+class Product extends Model
+{
+    use BelongsToTenant;
+
+    protected $fillable = ['name', 'price', 'tenant_id'];
+}
+```
+This automatically:
+- Registers `TenantScope` to isolate all database select queries.
+- Binds the model's `tenant_id` to the currently logged-in user's tenant during record creation.
+
+---
+
+## 📄 License
+This platform is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

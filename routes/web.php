@@ -37,6 +37,9 @@ Route::middleware('auth')->group(function () {
 
     // Form Builder Routes
     Route::resource('forms', \App\Http\Controllers\FormBuilderController::class);
+
+    // Tenant Management Routes (Global Super Admin Only)
+    Route::resource('tenants', \App\Http\Controllers\TenantController::class);
 });
 
 // Public Form Integration Routes

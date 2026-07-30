@@ -15,9 +15,15 @@
     <form method="POST" action="{{ route('register') }}" class="mt-8 space-y-5">
         @csrf
 
+        <!-- Company / Tenant Name -->
+        <div>
+            <input id="company_name" class="block w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:border-[#3b59dd] focus:ring focus:ring-[#3b59dd]/20 text-gray-800 placeholder-gray-400 text-sm transition duration-150 ease-in-out" type="text" name="company_name" :value="old('company_name')" required autofocus autocomplete="organization" placeholder="Your Company / Tenant Name" />
+            <x-input-error :messages="$errors->get('company_name')" class="mt-2" />
+        </div>
+
         <!-- Name -->
         <div>
-            <input id="name" class="block w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:border-[#3b59dd] focus:ring focus:ring-[#3b59dd]/20 text-gray-800 placeholder-gray-400 text-sm transition duration-150 ease-in-out" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="John Doe" />
+            <input id="name" class="block w-full px-4 py-3.5 rounded-xl border border-gray-200 focus:border-[#3b59dd] focus:ring focus:ring-[#3b59dd]/20 text-gray-800 placeholder-gray-400 text-sm transition duration-150 ease-in-out" type="text" name="name" :value="old('name')" required autocomplete="name" placeholder="John Doe" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 

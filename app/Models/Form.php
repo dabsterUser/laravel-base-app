@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use App\Models\Traits\BelongsToTenant;
 
 class Form extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, BelongsToTenant;
 
     protected $fillable = [
         'title',
@@ -17,6 +18,7 @@ class Form extends Model
         'fields',
         'status',
         'user_id',
+        'tenant_id',
     ];
 
     protected $casts = [

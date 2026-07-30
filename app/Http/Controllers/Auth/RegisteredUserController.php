@@ -34,13 +34,22 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'company_name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $tenant = \App\Models\Tenant::create([
+            'name' => $request->company_name,
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'tenant_id' => $tenant->id,
         ]);
+
+        $role = \App\Models\Role::findOrCreate('Super Admin', 'web');
+        $user->assignRole($role);
 
         event(new Registered($user));
 
