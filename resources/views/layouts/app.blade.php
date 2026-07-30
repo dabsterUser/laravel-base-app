@@ -146,6 +146,17 @@
                             </a>
                         @endcan
 
+                        <!-- Reports Center Link -->
+                        <a
+                            href="{{ route('reports.index') }}"
+                            class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group {{ request()->routeIs('reports.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'hover:bg-slate-800/60 hover:text-white' }}"
+                        >
+                            <svg class="mr-3 h-5 w-5 flex-shrink-0 {{ request()->routeIs('reports.*') ? 'text-white' : 'text-slate-400 group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4V9m-9 3h3m2 0h3m-9 2h3m2 0h3m-9 2h3m2 0h3M4 21h16a1 1 0 001-1V4a1 1 0 00-1-1H4a1 1 0 00-1 1v16a1 1 0 001 1z" />
+                            </svg>
+                            <span>Reports Center</span>
+                        </a>
+
                         <!-- Settings Navigation Link -->
                         @can('manage settings')
                             <a

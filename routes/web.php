@@ -40,6 +40,11 @@ Route::middleware('auth')->group(function () {
 
     // Tenant Management Routes (Global Super Admin Only)
     Route::resource('tenants', \App\Http\Controllers\TenantController::class);
+
+    // Dynamic Zero-Code Reporting Center Routes
+    Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/columns', [\App\Http\Controllers\ReportController::class, 'getColumns'])->name('reports.columns');
+    Route::get('/reports/export', [\App\Http\Controllers\ReportController::class, 'export'])->name('reports.export');
 });
 
 // Public Form Integration Routes
