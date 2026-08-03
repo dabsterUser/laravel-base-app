@@ -31,8 +31,10 @@ class Setting extends Model
      */
     public static function set(string $key, $value): self
     {
+        $tenantId = auth()->check() ? auth()->user()->tenant_id : null;
+
         $setting = static::updateOrCreate(
-            ['key' => $key],
+            ['key' => $key, 'tenant_id' => $tenantId],
             ['value' => $value]
         );
         return $setting;

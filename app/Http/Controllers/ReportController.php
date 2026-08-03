@@ -26,6 +26,11 @@ class ReportController extends Controller
 
                 $className = 'App\\Models\\' . pathinfo($file, PATHINFO_FILENAME);
                 if (class_exists($className)) {
+                    $baseName = pathinfo($file, PATHINFO_FILENAME);
+                    if (in_array($baseName, ['Setting', 'Permission', 'Role'])) {
+                        continue;
+                    }
+
                     $reflection = new \ReflectionClass($className);
                     if ($reflection->isSubclassOf(\Illuminate\Database\Eloquent\Model::class) && !$reflection->isAbstract()) {
                         $modelInstance = new $className();
@@ -105,6 +110,16 @@ class ReportController extends Controller
         $format = $request->input('format');
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+
+        // Security Filter: Sanitize selected columns against sensitive data leak attempts
+        $sensitiveColumns = ['password', 'remember_token', 'two_factor_secret', 'two_factor_recovery_codes', 'api_token', 'personal_access_token', 'key', 'value'];
+        $selectedColumns = array_values(array_filter($selectedColumns, function ($col) use ($sensitiveColumns) {
+            return !in_array(strtolower(trim($col)), $sensitiveColumns);
+        }));
+
+        if (empty($selectedColumns)) {
+            abort(400, 'Invalid or sensitive columns selected.');
+        }
 
         $modules = $this->getDiscoverableModules();
         if (!isset($modules[$modelName])) {
